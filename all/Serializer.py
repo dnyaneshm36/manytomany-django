@@ -20,10 +20,18 @@ class GroupSerializer(serializers.ModelSerializer):
         depth=1
 
 
+class Group_used_by_PersonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            'id',
+            'name'
+        ]
+
 
 class PersonSerializer(serializers.ModelSerializer):
     # persons_in_group=GroupSerializer(many=True, read_only=True)
-    persons_in_group=serializers.StringRelatedField(many=True)
+    persons_in_group=Group_used_by_PersonSerializer(many=True,read_only=True)
     class Meta:
         model = Person
         fields = [

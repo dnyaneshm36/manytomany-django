@@ -16,6 +16,6 @@ class Group(models.Model):
 
 class Membership(models.Model):
     Person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    Group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    Group = models.ForeignKey(Group, on_delete=models.prefetch_related_objects)  #to avoid deleting object when field aare change
     date_joined = models.DateField()
     invite_reason = models.CharField(max_length=64)
