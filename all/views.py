@@ -89,15 +89,16 @@ class MembershipAPIView(mixins.CreateModelMixin,generics.ListAPIView): #crea te 
         if query is not None:
             qs = qs.filter(content__icontains = query)
         return qs
-
+    # does not support .create on nested serlizer so wwrited inow serlizer
     def post(self,request,*args,**kwargs):
         return self.create(request,*args,**kwargs)
+
 
 
 class MembershipDetailAPIView(mixins.DestroyModelMixin, mixins.UpdateModelMixin , generics.RetrieveAPIView):
     # permission_classes        =[IsAuthenticated]
     # authentication_classes    =[BasicAuthentication]
-    serializer_class          =MembershipSerializer
+    serializer_class            =MembershipSerializer
     
     queryset                   =Membership.objects.all()
 

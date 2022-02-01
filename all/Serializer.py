@@ -1,3 +1,5 @@
+from asyncio import FastChildWatcher
+from dataclasses import field
 from tokenize import group
 from rest_framework import serializers
 from .models import *
@@ -41,8 +43,26 @@ class PersonSerializer(serializers.ModelSerializer):
         ]
         depth=1
 
-class MembershipSerializer(serializers.ModelSerializer):
-    Group=GroupSerializer( )
+from drf_writable_nested.serializers import WritableNestedModelSerializer,UniqueFieldsMixin
+from drf_writable_nested.serializers import *
+class Person_userby_MembershipSerializer(UniqueFieldsMixin, NestedUpdateMixin,
+        serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields =[ 'name']
+
+class Group_used_by_MembershipSerializer(UniqueFieldsMixin, NestedUpdateMixin,
+        serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = [
+            'name'
+        ]
+
+
+class MembershipSerializer(WritableNestedModelSerializer):
+    Person = Person_userby_MembershipSerializer(many=False)
+    Group=Group_used_by_MembershipSerializer( many = False)
     class Meta:
         model = Membership
         fields = [
@@ -52,4 +72,3 @@ class MembershipSerializer(serializers.ModelSerializer):
             'date_joined',
             'invite_reason'
         ]
-        depth=2     
