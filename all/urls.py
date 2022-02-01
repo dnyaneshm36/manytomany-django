@@ -7,5 +7,6 @@ urlpatterns = [
             path("group", views.GroupAPIView.as_view(),name="group"),
             path("group-CRUD/<int:pk>", views.GroupDetailAPIView.as_view(),name="group_crud"),
             path("membership", views.MembershipAPIView.as_view(),name="group"),
+            path("membership/create", views.MembershipCreateAPIView.as_view(),name="group"),
             path("membership-CRUD/<int:pk>", views.MembershipDetailAPIView.as_view(),name="group_crud"),
 ]

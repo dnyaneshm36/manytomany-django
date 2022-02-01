@@ -80,7 +80,7 @@ class GroupDetailAPIView(mixins.DestroyModelMixin, mixins.UpdateModelMixin , gen
 class MembershipAPIView(mixins.CreateModelMixin,generics.ListAPIView): #crea te list 
     permission_classes        =[AllowAny]
     authentication_classes    =[]
-    serializer_class          =MembershipSerializer
+    serializer_class          =MembershipreadonlySerializer
 
     def get_queryset(self):
         qs = Membership.objects.all()
@@ -92,6 +92,23 @@ class MembershipAPIView(mixins.CreateModelMixin,generics.ListAPIView): #crea te 
     # does not support .create on nested serlizer so wwrited inow serlizer
     def post(self,request,*args,**kwargs):
         return self.create(request,*args,**kwargs)
+    # def post(self,request,*args,**kwargs):
+    #     self.object = self.get_object()
+    #     return super().post(request, *args, **kwargs)
+
+from rest_framework.response import Response
+
+class MembershipCreateAPIView(generics.ListCreateAPIView): #crea te list 
+
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = MembershipSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 

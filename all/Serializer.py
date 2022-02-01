@@ -1,4 +1,3 @@
-from asyncio import FastChildWatcher
 from dataclasses import field
 from tokenize import group
 from rest_framework import serializers
@@ -43,26 +42,39 @@ class PersonSerializer(serializers.ModelSerializer):
         ]
         depth=1
 
-from drf_writable_nested.serializers import WritableNestedModelSerializer,UniqueFieldsMixin
-from drf_writable_nested.serializers import *
-class Person_userby_MembershipSerializer(UniqueFieldsMixin, NestedUpdateMixin,
+# from drf_writable_nested.serializers import WritableNestedModelSerializer,UniqueFieldsMixin,NestedUpdateMixin
+# from drf_writable_nested.serializers import *
+class Person_userby_MembershipSerializer(
         serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields =[ 'name']
+        fields =[ 'id','name']
 
-class Group_used_by_MembershipSerializer(UniqueFieldsMixin, NestedUpdateMixin,
+class Group_used_by_MembershipSerializer(
         serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = [
-            'name'
+            'id','name'
         ]
 
 
-class MembershipSerializer(WritableNestedModelSerializer):
-    Person = Person_userby_MembershipSerializer(many=False)
-    Group=Group_used_by_MembershipSerializer( many = False)
+class MembershipreadonlySerializer(serializers.ModelSerializer):
+    Person = Person_userby_MembershipSerializer(many=False,read_only=True)
+    Group=Group_used_by_MembershipSerializer( many = False,read_only=True)
+    class Meta:
+        model = Membership
+        fields = [
+            'id',
+            'Person',
+            'Group',
+            'date_joined',
+            'invite_reason'
+        ]
+
+class MembershipSerializer(serializers.ModelSerializer):
+    Person = serializers.PrimaryKeyRelatedField(many=False,queryset=Person.objects.all())
+    Group=serializers.PrimaryKeyRelatedField( many = False,queryset=Group.objects.all())
     class Meta:
         model = Membership
         fields = [
